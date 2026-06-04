@@ -37,3 +37,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Handling of non-standard errors such as strings, variables and objects.
+
+## [1.2.5] - 2026-06-04
+
+### Added
+
+- Update to Axios dependancy version.
