@@ -43,3 +43,10 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Update to Axios dependancy version.
+
+## [1.3.0] - 2026-06-08
+
+### Added
+
+- Added option for logs to console in dev mode.
+- Added specific methods for each log level.

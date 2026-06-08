@@ -9,8 +9,29 @@ export default class DiscordLog {
         this.levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'];
     }
 
+    async debug(message, error = null) {
+        this.log(message, 'DEBUG', error);
+    }
+
+    async info(message, error = null) {
+        this.log(message, 'INFO', error);
+    }
+
+    async warning(message, error = null) {
+        this.log(message, 'Warning', error);
+    }
+
+    async error(message, error = null) {
+        this.log(message, 'ERROR', error);
+    }
+
+    async critical(message, error = null) {
+        this.log(message, 'CRITICAL', error);
+    }
+
     async log(message, level = 'INFO', error = null){
-        if (this.webhookURL.toUpperCase() === 'DEV') return // Development mode to catch calls
+        if (this.webhookURL.toUpperCase() === 'DEV') return
+
         const levelUpper = level.toUpperCase();
 
         if (this.levels.indexOf(levelUpper) < this.levels.indexOf(this.level)) return;
@@ -35,6 +56,21 @@ export default class DiscordLog {
                 "description": `${timeStamp} \n ${message}${error? '\n' + errorMsg : ''}`,
                 "color": this.getColour(levelUpper)
             }]
+        }
+        if (this.webhookURL.toUpperCase() === 'DEV_CONSOLE') {
+            const output = `DiscordLog \n --------- \n ${levelUpper} \n ${timeStamp} \n ${message}${error? '\n' + errorMsg : ''}`
+            if (levelUpper === 'DEBUG') {
+                console.debug(output)
+            } else if (levelUpper === 'INFO') {
+                console.info(output)
+            } else if (levelUpper === 'WARNING') {
+                console.warn(output)
+            } else if (levelUpper === 'ERROR') {
+                console.error(output)
+            } else if (levelUpper === 'CRITICAL') {
+                console.error(output)
+            } 
+            return
         }
 
         try {

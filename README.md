@@ -41,7 +41,7 @@ import DiscordLog from 'discord-logging-handler';
 const logger = new DiscordLog('WEBHOOKURL', 'LEVEL')
 ```
 
-- `WEBHOOKURL`: Your webhook from Discord Integrations. Use `DEV` to enable development mode (logs are suppressed during builds/tests).
+- `WEBHOOKURL`: Your webhook from Discord Integrations. Use `DEV` to enable development mode (logs are suppressed during builds/tests). Use `DEV_CONSOLE` to enable development mode with all logs redirected to console.
 - `LEVEL` (optional): The minimum level that should trigger logs to be sent to Discord. Defaults to `'ERROR'`.
 
 Send logs with:
@@ -51,6 +51,18 @@ logInstance.log('Message', 'LEVEL', error)
 ```
 
 - `LEVEL` (optional): Log severity- `'DEBUG'`, `'INFO'`, `'WARNING'`, `'ERROR'`, `'CRITICAL'`. Defaults to `'INFO'`.
+- `error` (optional): An `Error` object or exception to include in the log. Defaults to null.
+
+or:
+
+```javascript
+logInstance.debug('Message', error)
+logInstance.info('Message', error)
+logInstance.warning('Message', error)
+logInstance.error('Message', error)
+logInstance.critical('Message', error)
+```
+
 - `error` (optional): An `Error` object or exception to include in the log. Defaults to null.
 
 ### Example
@@ -93,4 +105,4 @@ Feel free to open an issue or submit a pull request on [GitHub](https://github.c
 
 MIT License
 
-Copyright (c) 2025 Moses White
+Copyright (c) 2026 Moses White
