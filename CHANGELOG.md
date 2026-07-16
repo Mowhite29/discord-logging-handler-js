@@ -50,3 +50,46 @@ All notable changes to this project will be documented in this file.
 
 - Added option for logs to console in dev mode.
 - Added specific methods for each log level.
+
+## [2.0.0] - 2026-07-16
+
+### Breaking changes
+
+- Migrated package to TypeScript.
+- Added native ESM and CommonJS support.
+- Updated CommonJS import style:
+
+    Before:
+
+    ```javascript
+    const DiscordLog = require("discord-logging-handler");
+    ```
+
+    After:
+
+    ```javascript
+    const { DiscordLog } = require("discord-logging-handler");
+    ```
+
+- Added generated TypeScript declarations.
+- Logger initialisation now requires object style entry of minimum log level:
+
+    ```javascript
+    const logger = new DiscordLog('WEBHOOKURL', { level: 'LEVEL' });
+    ```
+
+- Calls of log now require a logging level when `error` is used:
+
+    ```javascript
+    logInstance.log('Message', 'LEVEL', error)
+    ```
+
+    Remains optional when no `error` is set and still defaults to '`INFO'`.
+
+    ```javascript
+    logInstance.log('Message')
+    ```
+
+### Fixes
+
+- ERR_REQUIRE_ESM compatibility issues.

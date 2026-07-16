@@ -1,40 +1,59 @@
 import axios from "axios";
+import { DiscordLogOptions, LogLevel } from "./types";
+import isLogLevel from "./isLogLevel";
 
 export default class DiscordLog {
-    constructor(webhookURL, options = {}) {
-        if (!webhookURL) throw Error('webhookURL is required');
-        this.webhookURL = webhookURL;
-        const level = typeof options === 'string' ? options : options.level || 'ERROR'
-        this.level = level.toUpperCase();
-        this.levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'];
+    private readonly webhookUrl: string;
+    private readonly level: LogLevel;
+    private readonly levels: LogLevel[] = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'];
+
+    constructor(webhookUrl: string, options: DiscordLogOptions = {}) {
+        if (!webhookUrl) throw Error('webhookURL is required');
+        this.webhookUrl = webhookUrl;
+        const level = options.level?.toUpperCase() ?? 'ERROR';
+
+        if (isLogLevel(level)){
+            this.level = level
+        } else {
+            throw Error('Valid minimum logging level required')
+        }
     }
 
-    async debug(message, error = null) {
+    async debug(message: string, error: Error | null = null) {
         this.log(message, 'DEBUG', error);
     }
 
-    async info(message, error = null) {
+    async info(message: string, error: Error | null = null) {
         this.log(message, 'INFO', error);
     }
 
-    async warning(message, error = null) {
-        this.log(message, 'Warning', error);
+    async warning(message: string, error: Error | null = null) {
+        this.log(message, 'WARNING', error);
     }
 
-    async error(message, error = null) {
+    async error(message: string, error: Error | null = null) {
         this.log(message, 'ERROR', error);
     }
 
-    async critical(message, error = null) {
+    async critical(message: string, error: Error | null = null) {
         this.log(message, 'CRITICAL', error);
     }
 
-    async log(message, level = 'INFO', error = null){
-        if (this.webhookURL.toUpperCase() === 'DEV') return
+    async log(message: string, level: string = 'INFO', error: Error | null = null){
+        if (this.webhookUrl.toUpperCase() === 'DEV') return;
+        if (typeof(level) != 'string') throw Error('Valid logging level required')
 
-        const levelUpper = level.toUpperCase();
+        const levelUpper = level?.toUpperCase() ?? 'INFO';
 
-        if (this.levels.indexOf(levelUpper) < this.levels.indexOf(this.level)) return;
+        let color = 0
+
+        if (isLogLevel(levelUpper)) {
+            if(this.levels.indexOf(levelUpper) < this.levels.indexOf(this.level)){
+                return
+            } else {
+                color = this.getColour(levelUpper)
+            }
+        }
         
         const timeStamp = new Date().toISOString();
 
@@ -54,10 +73,10 @@ export default class DiscordLog {
             "embeds": [{
                 "title": `${levelUpper}`,
                 "description": `${timeStamp} \n ${message}${error? '\n' + errorMsg : ''}`,
-                "color": this.getColour(levelUpper)
+                "color": color
             }]
         }
-        if (this.webhookURL.toUpperCase() === 'DEV_CONSOLE') {
+        if (this.webhookUrl.toUpperCase() === 'DEV_CONSOLE') {
             const output = `DiscordLog \n --------- \n ${levelUpper} \n ${timeStamp} \n ${message}${error? '\n' + errorMsg : ''}`
             if (levelUpper === 'DEBUG') {
                 console.debug(output)
@@ -75,7 +94,7 @@ export default class DiscordLog {
 
         try {
             await axios.post(
-                this.webhookURL, 
+                this.webhookUrl, 
                 payload, 
                 {
                     headers: { 'Content-Type': 'application/json' },
@@ -87,7 +106,7 @@ export default class DiscordLog {
         }
     }
 
-    getColour(level) {
+    getColour(level: LogLevel) {
         const colours = {
             DEBUG: 8421504,
             INFO: 3447003,

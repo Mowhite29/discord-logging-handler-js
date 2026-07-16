@@ -25,7 +25,7 @@ npm install discord-logging-handler
 
 Initialise the logger with:
 
-### Object style (Typescript / Recommended)
+### ES6
 
 ```javascript
 import DiscordLog from 'discord-logging-handler';
@@ -33,12 +33,12 @@ import DiscordLog from 'discord-logging-handler';
 const logger = new DiscordLog('WEBHOOKURL', { level: 'LEVEL' })
 ```
 
-Legacy style (Javascript)
+### Commonjs
 
 ```javascript
-import DiscordLog from 'discord-logging-handler';
+const { DiscordLog } = require("discord-logging-handler");
 
-const logger = new DiscordLog('WEBHOOKURL', 'LEVEL')
+const logger = new DiscordLog('WEBHOOKURL', { level: 'LEVEL' });
 ```
 
 - `WEBHOOKURL`: Your webhook from Discord Integrations. Use `DEV` to enable development mode (logs are suppressed during builds/tests). Use `DEV_CONSOLE` to enable development mode with all logs redirected to console.
@@ -47,22 +47,24 @@ const logger = new DiscordLog('WEBHOOKURL', 'LEVEL')
 Send logs with:
 
 ```javascript
-logInstance.log('Message', 'LEVEL', error)
+logInstance.log(Message, 'LEVEL', error)
 ```
 
-- `LEVEL` (optional): Log severity- `'DEBUG'`, `'INFO'`, `'WARNING'`, `'ERROR'`, `'CRITICAL'`. Defaults to `'INFO'`.
+- `Message`: Message string.
+- `LEVEL` (optional when no `error` is used): Log severity- `'DEBUG'`, `'INFO'`, `'WARNING'`, `'ERROR'`, `'CRITICAL'`. Defaults to `'INFO'` when used without an `error`.
 - `error` (optional): An `Error` object or exception to include in the log. Defaults to null.
 
 or:
 
 ```javascript
-logInstance.debug('Message', error)
-logInstance.info('Message', error)
-logInstance.warning('Message', error)
-logInstance.error('Message', error)
-logInstance.critical('Message', error)
+logInstance.debug(Message, error)
+logInstance.info(Message, error)
+logInstance.warning(Message, error)
+logInstance.error(Message, error)
+logInstance.critical(Message, error)
 ```
 
+- `Message`: Message string.
 - `error` (optional): An `Error` object or exception to include in the log. Defaults to null.
 
 ### Example
