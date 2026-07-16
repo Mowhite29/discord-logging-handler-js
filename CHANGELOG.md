@@ -93,3 +93,17 @@ All notable changes to this project will be documented in this file.
 ### Fixes
 
 - ERR_REQUIRE_ESM compatibility issues.
+
+## [2.0.1] - 2026-07-16
+
+### Fixes
+
+- Error typing.
+
+## [2.0.2] - 2026-07-16
+
+### Fixes
+
+- Restored fire-and-forget logging behaviour for public logging methods.
+- Improved compatibility with ESLint's `no-floating-promises` rule.
+- No code changes required for existing users using `logger.info()`, `logger.error()`, etc.

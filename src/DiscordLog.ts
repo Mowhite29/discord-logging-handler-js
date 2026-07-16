@@ -19,32 +19,96 @@ export default class DiscordLog {
         }
     }
 
-    async debug(message: string, error: Error | null = null) {
+    debug(message: string, error: Error | unknown = null): void {
         this.log(message, 'DEBUG', error);
     }
 
-    async info(message: string, error: Error | null = null) {
+    info(message: string, error: Error | unknown = null): void {
         this.log(message, 'INFO', error);
     }
 
-    async warning(message: string, error: Error | null = null) {
+    warning(message: string, error: Error | unknown = null): void {
         this.log(message, 'WARNING', error);
     }
 
-    async error(message: string, error: Error | null = null) {
+    error(message: string, error: Error | unknown = null): void {
         this.log(message, 'ERROR', error);
     }
 
-    async critical(message: string, error: Error | null = null) {
+    critical(message: string, error: Error | unknown = null): void {
         this.log(message, 'CRITICAL', error);
     }
 
-    async log(message: string, level: string = 'INFO', error: Error | null = null){
+    log(message: string, level: string = 'INFO', error: Error | unknown = null): void {
         if (this.webhookUrl.toUpperCase() === 'DEV') return;
         if (typeof(level) != 'string') throw Error('Valid logging level required')
 
         const levelUpper = level?.toUpperCase() ?? 'INFO';
 
+        let color = 0
+
+        if (isLogLevel(levelUpper)) {
+            if(this.levels.indexOf(levelUpper) < this.levels.indexOf(this.level)){
+                return
+            } else {
+                color = this.getColour(levelUpper)
+            }
+        }
+
+        this.sendLog(message, levelUpper, error)
+        
+        /* const timeStamp = new Date().toISOString();
+
+        let errorMsg = '';
+        if (error instanceof Error){
+            errorMsg = `${error.stack}`;
+        } else if (typeof error === 'string'){
+            errorMsg = `${error}`;
+        } else if (error){
+            try {
+                errorMsg = `${JSON.stringify(error, null, 2)}`;
+            } catch {
+                errorMsg = `[Unserialisable error: ${String(error)}]`;
+            }
+        }
+        const payload = {
+            "embeds": [{
+                "title": `${levelUpper}`,
+                "description": `${timeStamp} \n ${message}${error? '\n' + errorMsg : ''}`,
+                "color": color
+            }]
+        }
+        if (this.webhookUrl.toUpperCase() === 'DEV_CONSOLE') {
+            const output = `DiscordLog \n --------- \n ${levelUpper} \n ${timeStamp} \n ${message}${error? '\n' + errorMsg : ''}`
+            if (levelUpper === 'DEBUG') {
+                console.debug(output)
+            } else if (levelUpper === 'INFO') {
+                console.info(output)
+            } else if (levelUpper === 'WARNING') {
+                console.warn(output)
+            } else if (levelUpper === 'ERROR') {
+                console.error(output)
+            } else if (levelUpper === 'CRITICAL') {
+                console.error(output)
+            } 
+            return
+        }
+
+        try {
+            await axios.post(
+                this.webhookUrl, 
+                payload, 
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    timeout: 10000
+                }
+            );
+        } catch (e){
+            console.error('Discord logging unsuccessful')
+        } */
+    }
+
+    private async sendLog(message: string, levelUpper: string, error: unknown): Promise<void> {
         let color = 0
 
         if (isLogLevel(levelUpper)) {

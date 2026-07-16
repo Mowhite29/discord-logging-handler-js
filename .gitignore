@@ -1,3 +1,5 @@
 node_modules/
 .npmignore
 test.js
+test/
+test-common/

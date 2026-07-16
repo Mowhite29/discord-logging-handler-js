@@ -8,12 +8,13 @@ declare class DiscordLog {
     private readonly level;
     private readonly levels;
     constructor(webhookUrl: string, options?: DiscordLogOptions);
-    debug(message: string, error?: Error | null): Promise<void>;
-    info(message: string, error?: Error | null): Promise<void>;
-    warning(message: string, error?: Error | null): Promise<void>;
-    error(message: string, error?: Error | null): Promise<void>;
-    critical(message: string, error?: Error | null): Promise<void>;
-    log(message: string, level?: string, error?: Error | null): Promise<void>;
+    debug(message: string, error?: Error | unknown): void;
+    info(message: string, error?: Error | unknown): void;
+    warning(message: string, error?: Error | unknown): void;
+    error(message: string, error?: Error | unknown): void;
+    critical(message: string, error?: Error | unknown): void;
+    log(message: string, level?: string, error?: Error | unknown): void;
+    private sendLog;
     getColour(level: LogLevel): number;
 }
 

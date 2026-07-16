@@ -28,25 +28,36 @@ var DiscordLog = class {
       throw Error("Valid minimum logging level required");
     }
   }
-  async debug(message, error = null) {
+  debug(message, error = null) {
     this.log(message, "DEBUG", error);
   }
-  async info(message, error = null) {
+  info(message, error = null) {
     this.log(message, "INFO", error);
   }
-  async warning(message, error = null) {
+  warning(message, error = null) {
     this.log(message, "WARNING", error);
   }
-  async error(message, error = null) {
+  error(message, error = null) {
     this.log(message, "ERROR", error);
   }
-  async critical(message, error = null) {
+  critical(message, error = null) {
     this.log(message, "CRITICAL", error);
   }
-  async log(message, level = "INFO", error = null) {
+  log(message, level = "INFO", error = null) {
     if (this.webhookUrl.toUpperCase() === "DEV") return;
     if (typeof level != "string") throw Error("Valid logging level required");
     const levelUpper = level?.toUpperCase() ?? "INFO";
+    let color = 0;
+    if (isLogLevel(levelUpper)) {
+      if (this.levels.indexOf(levelUpper) < this.levels.indexOf(this.level)) {
+        return;
+      } else {
+        color = this.getColour(levelUpper);
+      }
+    }
+    this.sendLog(message, levelUpper, error);
+  }
+  async sendLog(message, levelUpper, error) {
     let color = 0;
     if (isLogLevel(levelUpper)) {
       if (this.levels.indexOf(levelUpper) < this.levels.indexOf(this.level)) {
